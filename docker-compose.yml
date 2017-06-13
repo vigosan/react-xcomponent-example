@@ -1,0 +1,30 @@
+version: '2'
+services:
+  app:
+    build: ./
+    volumes:
+      - '.:/app'
+      - npm-app:/app/node_modules
+    ports:
+      - '8080:8080'
+    command: bash -c 'yarn start:dev'
+
+  selenium:
+    image: selenium/standalone-chrome
+    expose:
+      - '4444'
+
+  e2e:
+    build: ./e2e
+    volumes:
+      - './e2e:/e2e'
+      - npm-e2e:/e2e/node_modules
+    depends_on:
+      - selenium
+      - app
+
+volumes:
+  npm-app:
+    driver: local
+  npm-e2e:
+    driver: local
